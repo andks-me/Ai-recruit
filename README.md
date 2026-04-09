@@ -29,19 +29,74 @@ git clone https://github.com/andks-me/Ai-recruit.git
 cd Ai-recruit
 ```
 
-Install the dependencies:
+Install Elixir deps:
 ```bash
-npm install
+mix deps.get
 ```
 
 ## Usage
 
-To run the application, execute the following command:
+### Run API server
+
+Set required env vars:
+
+- `RECRUITMENT_SYSTEM_COOKIE_KEY_B64`: **base64 of 32 bytes** encryption key (AES-256-GCM) used to encrypt cookies at rest.
+- `PORT` (optional): HTTP port, defaults to `4000`.
+
+Example:
+
 ```bash
-npm start
+export RECRUITMENT_SYSTEM_COOKIE_KEY_B64="$(openssl rand -base64 32)"
+export PORT=4000
+mix run --no-halt
 ```
 
-Visit `http://localhost:3000` in your browser to access the application.
+API is available at `http://localhost:4000`.
+
+### Create/Configure LinkedIn agent session (li_at)
+
+Endpoint: `POST /api/v1/agents/create`
+
+Request body (example):
+
+```json
+{
+  "agent_type": "linkedin",
+  "user_id": "u_123",
+  "linkedin_auth": {
+    "li_at": "PASTE_LI_AT_HERE",
+    "cookies": {
+      "li_at": "PASTE_LI_AT_HERE",
+      "JSESSIONID": "ajax:1234567890"
+    },
+    "user_agent": "Mozilla/5.0 ...",
+    "proxy": "http://host:port"
+  }
+}
+```
+
+Response (example):
+
+```json
+{ "status": "OK", "agent_type": "linkedin", "user_id": "u_123" }
+```
+
+Notes:
+
+- `li_at` is **validated as non-empty** and must look like a hex/base64-like token.
+- Cookies are stored **encrypted at rest** (never log plaintext `li_at`).
+
+### How to obtain `li_at` safely
+
+1. Log in to LinkedIn in your browser.
+2. Open DevTools (F12) → **Application/Storage** → **Cookies**.
+3. Select the `.linkedin.com` domain.
+4. Copy the cookie named **`li_at`**.
+
+Important:
+
+- `li_at` is **short-lived** and may stop working after logout, cache clear, or LinkedIn security checks.
+- Treat `li_at` like a password. Do **not** paste it into tickets/chats.
 
 ## Contributing
 

@@ -1,7 +1,8 @@
 import Config
 
 config :recruitment_system,
-  ecto_repos: []
+  ecto_repos: [],
+  http_port: String.to_integer(System.get_env("PORT") || "4000")
 
 config :recruitment_system, RecruitmentSystem.Scheduler,
   jobs: [
