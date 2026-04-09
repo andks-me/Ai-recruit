@@ -20,14 +20,12 @@ defmodule RecruitmentSystem.MixProject do
 
   defp deps do
     [
-      {:httpoison, "~> 1.8"},
       {:jason, "~> 1.4"},
       {:quantum, "~> 3.4"},
       {:crontab, "~> 1.1"},
       {:phoenix, "~> 1.7"},
       {:phoenix_live_view, "~> 0.19"},
       {:plug_cowboy, "~> 2.6"},
-      {:nadia, "~> 0.7"},
       {:floki, "~> 0.34"},
       {:oban, "~> 2.13"}
     ]

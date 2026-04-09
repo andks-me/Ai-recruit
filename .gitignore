@@ -1,0 +1,8 @@
+/.hex/
+/.mix/
+/_build/
+/deps/
+
+# OS / editor noise
+.DS_Store
+
