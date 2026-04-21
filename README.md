@@ -86,6 +86,18 @@ Notes:
 - `li_at` is **validated as non-empty** and must look like a hex/base64-like token.
 - Cookies are stored **encrypted at rest** (never log plaintext `li_at`).
 
+### Revoke LinkedIn session (fix decrypt_failed / rotate key)
+
+If you changed `RECRUITMENT_SYSTEM_COOKIE_KEY_B64` (new key) and the stored session can no longer be decrypted, revoke the stored session and create it again with the new key:
+
+Endpoint: `DELETE /api/v1/agents/session`
+
+```bash
+curl -i -X DELETE http://localhost:4000/api/v1/agents/session \
+  -H 'content-type: application/json' \
+  -d '{"user_id":"u_123"}'
+```
+
 ### How to obtain `li_at` safely
 
 1. Log in to LinkedIn in your browser.

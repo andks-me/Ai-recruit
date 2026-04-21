@@ -44,6 +44,22 @@ defmodule RecruitmentSystem.Web.AgentsController do
 
   def create(_), do: {:error, :bad_request}
 
+  @spec revoke_session(map()) :: {:ok, map()} | {:error, term()}
+  def revoke_session(%{} = params) do
+    with {:ok, user_id} <- validate_user_id(Map.get(params, "user_id")),
+         :ok <- SessionStore.revoke(user_id) do
+      {:ok, %{status: "OK", action: "session_revoked", user_id: user_id}}
+    else
+      {:error, :invalid_user_id} ->
+        {:error, {:validation, "user_id is required"}}
+
+      other ->
+        {:error, other}
+    end
+  end
+
+  def revoke_session(_), do: {:error, :bad_request}
+
   defp validate_user_id(user_id) when is_binary(user_id) do
     user_id = String.trim(user_id)
     if user_id == "", do: {:error, :invalid_user_id}, else: {:ok, user_id}

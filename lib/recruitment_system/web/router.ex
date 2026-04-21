@@ -12,10 +12,34 @@ defmodule RecruitmentSystem.Web.Router do
 
   plug :dispatch
 
+  get "/" do
+    send_json(conn, 200, %{ok: true, service: "recruitment_system"})
+  end
+
+  get "/health" do
+    send_json(conn, 200, %{ok: true})
+  end
+
   post "/api/v1/agents/create" do
     case RecruitmentSystem.Web.AgentsController.create(conn.body_params) do
       {:ok, resp} ->
         send_json(conn, 201, resp)
+
+      {:error, {:validation, msg}} ->
+        send_json(conn, 422, %{error: msg})
+
+      {:error, :bad_request} ->
+        send_json(conn, 400, %{error: "bad_request"})
+
+      {:error, other} ->
+        send_json(conn, 500, %{error: "internal_error", reason: inspect(other)})
+    end
+  end
+
+  delete "/api/v1/agents/session" do
+    case RecruitmentSystem.Web.AgentsController.revoke_session(conn.body_params) do
+      {:ok, resp} ->
+        send_json(conn, 200, resp)
 
       {:error, {:validation, msg}} ->
         send_json(conn, 422, %{error: msg})

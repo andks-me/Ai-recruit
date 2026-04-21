@@ -6,3 +6,6 @@
 # OS / editor noise
 .DS_Store
 
+# runtime data (encrypted cookie store)
+/priv/*.dets
+
